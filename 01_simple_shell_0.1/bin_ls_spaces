@@ -10,19 +10,24 @@ tmp_file="checker_tmp_file_$RANDOM"
 
 # clean up
 stop_shell
-rm -f $tmp_file
+$RM -f $tmp_file
+$RM -f $OUTPUTFILE
+$RM -f $ERROROUTPUTFILE
 
 # create a pseudo random file
-touch $tmp_file
+$TOUCH $tmp_file
+$TOUCH $OUTPUTFILE
+$TOUCH $ERROROUTPUTFILE
+
 # send commands
-echo "$command" | $SHELL > $OUTPUTFILE 2> /dev/null &
+$ECHO "$command" | $SHELL > $OUTPUTFILE 2> $ERROROUTPUTFILE &
+$ECHO "$command" | $SHELLSYS > $tmp_file 2> $ERROROUTPUTFILE &
 
 # wait a little bit
 $SLEEP $SLEEPSECONDS
 
 # check the result
-nmatch=`cat $OUTPUTFILE | grep -c "$tmp_file"`
-if [ $nmatch -eq 4 ]; then
+if $CMP --silent -- "$OUTPUTFILE" "$tmp_file"; then
 	   print_ok
 else
 	   print_ko
@@ -30,5 +35,6 @@ fi
 
 # clean up
 stop_shell
-rm -f $tmp_file
-    
+$RM -f $OUTPUTFILE
+$RM -f $tmp_file
+$RM -f $ERROROUTPUTFILE 
