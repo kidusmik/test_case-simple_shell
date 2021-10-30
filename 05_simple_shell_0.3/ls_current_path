@@ -3,19 +3,33 @@
 # check that the PATH is checked in the right order
 
 command="ls"
-tmp_file="checker_tmp_file_$RANDOM"
 
 # clean up
 stop_shell
-rm -f $tmp_file
+$RM -f $OUTSYS
+$RM -f $OUTSS
+$RM -f $OUTERRSYS
+$RM -f $OUTERRSS
 
 # create a pseudo random file
-touch $tmp_file
+$TOUCH $OUTSYS
+$TOUCH $OUTSS
+$TOUCH $OUTERRSYS
+$TOUCH $OUTERRSS
+
+# give each file read write permission
+$CHMOD u+rw $OUTSYS
+$CHMOD u+rw $OUTSS
+$CHMOD u+rw $OUTERRSYS
+$CHMOD u+rw $OUTERRSS
+
 # empty PATH
 OLDPATH="$PATH"
 PATH=":$PATH"
-# send commands
-$ECHO "$command" | $SHELL > $OUTPUTFILE 2> $ERROROUTPUTFILE &
+
+# run command
+$ECHO "$command" | $SHELL > $OUTSS 2> $OUTERRSS &
+$ECHO "$command" | $SHELLSYS > $OUTSYS 2> $OUTERRSYS &
 
 # put PATH back
 PATH="$OLDPATH"
@@ -24,13 +38,15 @@ PATH="$OLDPATH"
 $SLEEP $SLEEPSECONDS
 
 # check the result
-res=`$CAT "$OUTPUTFILE"`
-if [ "$res" == "cisfun" ]; then
-    print_ok
+if $CMP --silent -- "$OUTSS" "$OUTSYS"; then
+           print_ok
 else
-    print_ko
+           print_ko
 fi
 
 # clean up
 stop_shell
-$RM -f $tmp_file
+$RM -f $OUTSYS
+$RM -f $OUTSS
+$RM -f $OUTERRSYS
+$RM -f $OUTERRSS

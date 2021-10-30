@@ -2,14 +2,22 @@
 
 TESTDIR="."
 R=$RANDOM
-OUTPUTFILE="checker_output_$R"
-ERROROUTPUTFILE="checker_error_output_$R"
+OUTSYSFILENAME="checker_sys_output_$R"
+OUTSSFILENAME="checker_ss_output_$R"
+OUTERRSYSFILENAME="checker_sys_err_output_$R"
+OUTERRSSFILENAME="checker_ss_err_output_$R"
+OUTLTRACEFILENAME="checker_ltrace_output_$R"
+TMPDIR="/tmp"
+OUTSYS="$TMPDIR/$OUTSYSFILENAME"
+OUTSS="$TMPDIR/$OUTSSFILENAME"
+OUTERRSYS="$TMPDIR/$OUTERRSYSFILENAME"
+OUTERRSS="$TMPDIR/$OUTERRSSFILENAME"
+OUTLTRACE="$TMPDIR/$OUTLTRACEFILENAME"
 SHELL="./simple_shell"
 SHELLSYS="/bin/sh"
 SLEEP=`which sleep`
 SLEEPSECONDS=1
 LTRACE=`which ltrace`
-LTRACEOUTPUTFILE="checker_ltrace_output_$R"
 ECHO=`which echo`
 CAT=`which cat`
 GREP=`which grep`

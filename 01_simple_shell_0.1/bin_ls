@@ -3,29 +3,35 @@
 # test simple command /bin/ls
 
 command="/bin/ls"
-tmp_file="checker_tmp_file_$RANDOM"
 
 # clean up
 stop_shell
-$RM -f $tmp_file
-$RM -f $OUTPUTFILE
-$RM -f $ERROROUTPUTFILE
+$RM -f $OUTSYS
+$RM -f $OUTSS
+$RM -f $OUTERRSYS
+$RM -f $OUTERRSS
 
 # create a pseudo random file
-$TOUCH $tmp_file
-$TOUCH $OUTPUTFILE
-$TOUCH $ERROROUTPUTFILE
+$TOUCH $OUTSYS
+$TOUCH $OUTSS
+$TOUCH $OUTERRSYS
+$TOUCH $OUTERRSS
+
+# give each file read write permission
+$CHMOD u+rw $OUTSYS
+$CHMOD u+rw $OUTSS
+$CHMOD u+rw $OUTERRSYS
+$CHMOD u+rw $OUTERRSS
 
 # run command
-$ECHO "$command" | $SHELL > $OUTPUTFILE 2> $ERROROUTPUTFILE &
-$ECHO "$command" | $SHELLSYS > $tmp_file 2> $ERROROUTPUTFILE &
+$ECHO "$command" | $SHELL > $OUTSS 2> $OUTERRSS &
+$ECHO "$command" | $SHELLSYS > $OUTSYS 2> $OUTERRSYS &
 
 # wait a little bit
 $SLEEP $SLEEPSECONDS
 
 # check the result
-# nmatch=`cat $OUTPUTFILE | grep -c "$tmp_file"`
-if $CMP --silent -- "$OUTPUTFILE" "$tmp_file"; then
+if $CMP --silent -- "$OUTSS" "$OUTSYS"; then
 	   print_ok
 else
 	   print_ko
@@ -33,6 +39,7 @@ fi
 
 # clean up
 stop_shell
-$RM -f $ERROROUTPUTFILE
-$RM -f $OUTPUTFILE
-$RM -f $tmp_file
+$RM -f $OUTSYS
+$RM -f $OUTSS
+$RM -f $OUTERRSYS
+$RM -f $OUTERRSS

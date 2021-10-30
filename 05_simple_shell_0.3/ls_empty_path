@@ -4,19 +4,33 @@
 # check also that an error message is printed to the user
 
 command="ls"
-tmp_file="checker_tmp_file_$RANDOM"
 
 # clean up
 stop_shell
-rm -f $tmp_file
+$RM -f $OUTSYS
+$RM -f $OUTSS
+$RM -f $OUTERRSYS
+$RM -f $OUTERRSS
 
 # create a pseudo random file
-touch $tmp_file
+$TOUCH $OUTSYS
+$TOUCH $OUTSS
+$TOUCH $OUTERRSYS
+$TOUCH $OUTERRSS
+
+# give each file read write permission
+$CHMOD u+rw $OUTSYS
+$CHMOD u+rw $OUTSS
+$CHMOD u+rw $OUTERRSYS
+$CHMOD u+rw $OUTERRSS
+
 # empty PATH
 OLDPATH="$PATH"
 PATH=""
-# send commands
-$ECHO "$command" | $SHELL > $OUTPUTFILE 2> $ERROROUTPUTFILE &
+
+# run command
+$ECHO "$command" | $SHELL > $OUTSS 2> $OUTERRSS &
+$ECHO "$command" | $SHELLSYS > $OUTSYS 2> $OUTERRSYS &
 
 # put PATH back
 PATH="$OLDPATH"
@@ -25,12 +39,11 @@ PATH="$OLDPATH"
 $SLEEP $SLEEPSECONDS
 
 # check the result
-nmatch=`$CAT $OUTPUTFILE | $GREP -c "$tmp_file"`
-if [ $nmatch -eq 0 ]; then
-    if [ `$CAT $ERROROUTPUTFILE | wc -c` -ge 5 ]; then
-	   print_ok
+if $CMP --silent -- "$OUTSS" "$OUTSYS"; then
+    if $CMP --silent -- "$OUTERRSS" "$OUTERRSYS"; then           
+        print_ok
     else
-	   print_ok
+        print_ok
     fi
 else
     print_ko
@@ -38,4 +51,7 @@ fi
 
 # clean up
 stop_shell
-$RM -f $tmp_file
+$RM -f $OUTSYS
+$RM -f $OUTSS
+$RM -f $OUTERRSYS
+$RM -f $OUTERRSS

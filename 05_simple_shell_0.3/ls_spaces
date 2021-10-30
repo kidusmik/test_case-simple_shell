@@ -6,28 +6,43 @@ command="ls
      ls
 ls     
  ls     "
-tmp_file="checker_tmp_file_$RANDOM"
 
 # clean up
 stop_shell
-rm -f $tmp_file
+$RM -f $OUTSYS
+$RM -f $OUTSS
+$RM -f $OUTERRSYS
+$RM -f $OUTERRSS
 
 # create a pseudo random file
-touch $tmp_file
-# send commands
-echo "$command" | $SHELL > $OUTPUTFILE 2> /dev/null &
+$TOUCH $OUTSYS
+$TOUCH $OUTSS
+$TOUCH $OUTERRSYS
+$TOUCH $OUTERRSS
+
+# give each file read write permission
+$CHMOD u+rw $OUTSYS
+$CHMOD u+rw $OUTSS
+$CHMOD u+rw $OUTERRSYS
+$CHMOD u+rw $OUTERRSS
+
+# run command
+$ECHO "$command" | $SHELL > $OUTSS 2> $OUTERRSS &
+$ECHO "$command" | $SHELLSYS > $OUTSYS 2> $OUTERRSYS &
 
 # wait a little bit
 $SLEEP $SLEEPSECONDS
 
 # check the result
-nmatch=`cat $OUTPUTFILE | grep -c "$tmp_file"`
-if [ $nmatch -eq 4 ]; then
-	   print_ok
+if $CMP --silent -- "$OUTSS" "$OUTSYS"; then
+           print_ok
 else
-	   print_ko
+           print_ko
 fi
 
 # clean up
 stop_shell
-rm -f $tmp_file
+$RM -f $OUTSYS
+$RM -f $OUTSS
+$RM -f $OUTERRSYS
+$RM -f $OUTERRSS
