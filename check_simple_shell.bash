@@ -47,7 +47,7 @@ function stop_shell()
     if [ `pidof $SHELL | wc -l` -ne 0 ]; then
 	   killall -9 $SHELL 2>&1 > /dev/null
     fi
-    rm -f $OUTPUTFILE $ERROROUTPUTFILE $LTRACEOUTPUTFILE
+    rm -f $OUTSS $OUTSYS $OUTERRSS $OUTERRSYS $OUTLTRACE
 }
 
 # Load configuration
@@ -55,7 +55,7 @@ source config
 
 # Cleanup
 echo -ne "\033[37m"
-rm -f $OUTPUTFILE $LTRACEOUTPUTFILE
+rm -f $OUTSYS $OUTSS $OUTERRSS $OUTERRSYS $OUTLTRACE
 
 # Locates all tests and launch them
 for dir in `ls -d "$TESTDIR"/*/`
@@ -69,8 +69,8 @@ do
 done
 
 # Cleanup
-rm -f $OUTPUTFILE $LTRACEOUTPUTFILE $ERROROUTPUTFILE
-rm -f checker_output_*
-rm -f checker_tmp_file_*
-rm -f /tmp/.checker_tmp_file_*
+rm -f $OUTSYS $OUTSS $OUTERRSYS $OUTERRSS $OUTLTRACE
+rm -f /tmp/checker_sys_*
+rm -f /tmp/checker_ss_*
+rm -f /tmp/checker_ltrace_*
 echo -ne "\033[37m"
